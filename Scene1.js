@@ -22,6 +22,10 @@ class Scene1 extends Phaser.Scene {
 			frameWidth: 16,
 			frameHeight: 16
  		});
+ 		this.load.spritesheet("power-up", "assets/spritesheets/power-up.png", {
+ 			frameHeight: 16,
+ 			frameWidth: 16
+ 		});
 	}
 
 	create() {
