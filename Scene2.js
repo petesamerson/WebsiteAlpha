@@ -12,11 +12,12 @@ class Scene2 extends Phaser.Scene {
 		graphics.beginPath()
 		graphics.moveTo(0,0)
 		graphics.lineTo(config.width, 0)
-		graphics.lineTo(config.width, 20)
+		graphics.lineTo(config.width, 30)
 		graphics.lineTo(0, 20)
 		graphics.lineTo(0, 0)
 		graphics.closePath()
 		graphics.fillPath()
+        this.setupHexGrid()
 
 		this.ship1 = this.add.sprite(config.width/2 - 50, config.height/2, "ship")
 		this.ship2 = this.add.sprite(config.width/2, config.height/2, "ship2")
@@ -92,8 +93,67 @@ class Scene2 extends Phaser.Scene {
             loop: false,
             delay: 0
         }
-        this.music.play(musicConfig)
+        //this.music.play(musicConfig)
 	}
+    
+    setupHexGrid() {
+        var gridXPixels = .8 * config.width
+        var gridYPixels = .8 * config.height
+        
+        var size = 30 
+        var separationX = 3*size
+        var separationY = .86*size
+        
+        var gridX = Math.round(gridXPixels/separationX) + 1
+        var gridY = Math.round(gridYPixels/separationY) + 1
+        
+        var currentX = config.width/2.0 -gridXPixels/2.0
+        var currentY = config.height/2.0 -gridYPixels/2.0
+        var fillHex = false
+        for (var i=0; i< gridY; i++){
+            if(i % 2 ==0) {
+                currentX += (1.5*size)
+            }
+            for (var j = 0; j<gridX; j++) {
+                if(i==2 && j==4) {
+                    fillHex = true
+                }
+                if(i==1 && j==5) {
+                    fillHex = true
+                }
+                if(i==2 && j==5) {
+                    fillHex = true
+                }
+                this.drawHexagon(currentX, currentY, size, fillHex)
+                fillHex=false
+                currentX+=separationX
+            }
+            fillHex = false
+            currentX = config.width/2.0 -gridXPixels/2.0
+            currentY += separationY
+        }
+    }
+    
+    drawHexagon(x, y, side, fillHex) {
+       
+       var graphics = this.add.graphics()
+       console.log("drawn at x: " + "y: "+y)
+       graphics.lineStyle(3, 0x000000, 1.0)
+       graphics.moveTo(x + side*Math.sin(Math.PI/2), y+ side*Math.cos(Math.PI/2))
+       graphics.lineTo(x + side*Math.sin(Math.PI/6), y+ side*Math.cos(Math.PI/6))
+       graphics.lineTo(x + side*Math.sin(11*Math.PI/6), y+ side*Math.cos(11*Math.PI/6))
+       graphics.lineTo(x + side*Math.sin(3*Math.PI/2), y+ side*Math.cos(3*Math.PI/2))
+       graphics.lineTo(x + side*Math.sin(7*Math.PI/6), y+ side*Math.cos(7*Math.PI/6))
+       graphics.lineTo(x + side*Math.sin(5*Math.PI/6), y+ side*Math.cos(5*Math.PI/6))
+       graphics.closePath()
+       graphics.strokePath()
+       if(fillHex) {
+           console.log("filled at x: " +x +" y: "+y)
+           graphics.fillStyle(0x0022AA,0.5)
+           graphics.fillPath()
+       }
+        
+    }
 
     pickPowerUp(player, powerUp) {
         powerUp.disableBody(true,true)

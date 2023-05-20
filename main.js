@@ -3,9 +3,9 @@
 	}
 
 	var config = {
-		width: 256,
-		height: 272,
-		backgroundColor: 0x000000,
+		width: 780,
+		height: 780,
+		backgroundColor: 0xffffff,
 		scene: [Scene1,Scene2],
 		pixelArt: true,
 		physics: {
