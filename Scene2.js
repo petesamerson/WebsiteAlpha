@@ -76,6 +76,23 @@ class Scene2 extends Phaser.Scene {
 
         this.score = 0
         this.scoreLabel = this.add.bitmapText(10, 5, "pixelFont", "SCORE", 16)
+
+        this.beamSound = this.sound.add("audio_beam")
+        this.explosionSound = this.sound.add("audio_explosion")
+        this.pickupSound = this.sound.add("audio_pickup")
+
+        this.music = this.sound.add("music")
+
+        var musicConfig = {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
+        this.music.play(musicConfig)
 	}
 
     pickPowerUp(player, powerUp) {
@@ -122,6 +139,7 @@ class Scene2 extends Phaser.Scene {
 
     hitEnemy(projectile, enemy) {
         var explosion = new Explosion(this, enemy.x, enemy.y)
+        this.explosionSound.play()
 
         projectile.destroy()
         this.resetShipPos(enemy)
@@ -169,6 +187,7 @@ class Scene2 extends Phaser.Scene {
 
     shootBeam(){
         var beam = new Beam(this)
+        this.beamSound.play()
     }
 
     zeroPad(number, size) {
