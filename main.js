@@ -3,8 +3,8 @@
 	}
 
 	var config = {
-		width: 780,
-		height: 780,
+		width: 800,
+		height: 800,
 		backgroundColor: 0xffffff,
 		scene: [Scene1,Scene2],
 		pixelArt: true,

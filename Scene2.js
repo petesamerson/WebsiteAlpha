@@ -38,7 +38,6 @@ class Scene2 extends Phaser.Scene {
 		this.ship2.setInteractive()
 		this.ship3.setInteractive()
 
-		this.input.on('gameobjectdown', this.destroyShip, this)
 
 		this.physics.world.setBoundsCollision();
 		this.powerUps = this.physics.add.group();
@@ -109,21 +108,37 @@ class Scene2 extends Phaser.Scene {
         
         var currentX = config.width/2.0 -gridXPixels/2.0
         var currentY = config.height/2.0 -gridYPixels/2.0
+        
+        var selectedX = 1
+        var selectedY = 5
         var fillHex = false
         for (var i=0; i< gridY; i++){
             if(i % 2 ==0) {
                 currentX += (1.5*size)
             }
             for (var j = 0; j<gridX; j++) {
-                if(i==2 && j==4) {
+                if (selectedX == j && selectedY == i) {
                     fillHex = true
                 }
-                if(i==1 && j==5) {
+                if (selectedX-1 == j && selectedY-1 == i) {
                     fillHex = true
                 }
-                if(i==2 && j==5) {
+                if (selectedX-1 == j && selectedY+1 == i) {
                     fillHex = true
                 }
+                if (selectedX == j && selectedY-2 == i) {
+                    fillHex = true
+                }
+                if (selectedX == j && selectedY+2 == i) {
+                    fillHex = true
+                }
+                if (selectedX == j && selectedY+1 == i) {
+                    fillHex = true
+                }
+                if (selectedX == j && selectedY-1 == i) {
+                    fillHex = true
+                }
+                
                 this.drawHexagon(currentX, currentY, size, fillHex)
                 fillHex=false
                 currentX+=separationX
@@ -139,24 +154,40 @@ class Scene2 extends Phaser.Scene {
        var graphics = this.add.graphics()
        console.log("drawn at x: " + "y: "+y)
        graphics.lineStyle(3, 0x000000, 1.0)
-       graphics.moveTo(x + side*Math.sin(Math.PI/2), y+ side*Math.cos(Math.PI/2))
-       graphics.lineTo(x + side*Math.sin(Math.PI/6), y+ side*Math.cos(Math.PI/6))
-       graphics.lineTo(x + side*Math.sin(11*Math.PI/6), y+ side*Math.cos(11*Math.PI/6))
-       graphics.lineTo(x + side*Math.sin(3*Math.PI/2), y+ side*Math.cos(3*Math.PI/2))
-       graphics.lineTo(x + side*Math.sin(7*Math.PI/6), y+ side*Math.cos(7*Math.PI/6))
-       graphics.lineTo(x + side*Math.sin(5*Math.PI/6), y+ side*Math.cos(5*Math.PI/6))
-       graphics.closePath()
-       graphics.strokePath()
-       if(fillHex) {
+//       graphics.moveTo(x + side*Math.sin(Math.PI/2), y+ side*Math.cos(Math.PI/2))
+//       graphics.lineTo(x + side*Math.sin(Math.PI/6), y+ side*Math.cos(Math.PI/6))
+//       graphics.lineTo(x + side*Math.sin(11*Math.PI/6), y+ side*Math.cos(11*Math.PI/6))
+//       graphics.lineTo(x + side*Math.sin(3*Math.PI/2), y+ side*Math.cos(3*Math.PI/2))
+//       graphics.lineTo(x + side*Math.sin(7*Math.PI/6), y+ side*Math.cos(7*Math.PI/6))
+//       graphics.lineTo(x + side*Math.sin(5*Math.PI/6), y+ side*Math.cos(5*Math.PI/6))
+//       graphics.closePath()
+//       graphics.strokePath()
+        graphics.fillStyle(0x000000,0.8)
+        if(fillHex) {
            console.log("filled at x: " +x +" y: "+y)
-           graphics.fillStyle(0x0022AA,0.5)
-           graphics.fillPath()
-       }
-        
+           graphics.fillStyle(0x0055FF, 0.8)    
+        }
+//       graphics.fillPath()
+        var polygon = new Phaser.Geom.Polygon([
+            x + side*Math.sin(Math.PI/2), y+ side*Math.cos(Math.PI/2),
+            x + side*Math.sin(Math.PI/6), y+ side*Math.cos(Math.PI/6),
+            x + side*Math.sin(11*Math.PI/6), y+ side*Math.cos(11*Math.PI/6),
+            x + side*Math.sin(3*Math.PI/2), y+ side*Math.cos(3*Math.PI/2),
+            x + side*Math.sin(7*Math.PI/6), y+ side*Math.cos(7*Math.PI/6),
+            x + side*Math.sin(5*Math.PI/6), y+ side*Math.cos(5*Math.PI/6)
+        ])
+        graphics.fillPoints(polygon.points, true)
+        graphics.setInteractive(polygon, Phaser.Geom.Polygon.Contains)
+		this.input.on('gameobjectdown', this.onHexClick, this)
+    }
+    
+    onHexClick(pointer, gameObject) {
+        gameObject.fillStyle(0x0055FF, 0.8)    
+        gameObject.fillPath()
     }
 
     pickPowerUp(player, powerUp) {
-        powerUp.disableBody(true,true)
+       powerUp.disableBody(true,true)
     }
 
     hurtPlayer(player, enemy) {
@@ -222,8 +253,8 @@ class Scene2 extends Phaser.Scene {
 	}
 
 	destroyShip(pointer, gameObject) {
-		gameObject.setTexture("explosion")
-		gameObject.play("explode")
+//		gameObject.setTexture("explosion")
+		//gameObject.play("explode")
 	}
 
 	movePlayerManager() {
